@@ -18,8 +18,10 @@ score dw 0
 pontuacao2 db ' mortes. ', 0
 pontuacao3 db ' Deseja jogar novamente ? ', 0
 pontuacao4 db ' Pressione qualquer tecla para ', 0
-pontuacao5 db ' voltar ao menu inicial ', 0
+pontuacao5 db ' voltar ao menu inicial. ', 0
 
+white equ 15
+darkgreen equ 2
 green equ 10
 blue equ 1
 black equ 0
@@ -27,6 +29,7 @@ brown equ 6
 red equ 12
 grey equ 7
 dark_red equ 4
+yellow equ 14
 
 leftarrow equ $1E
 rightarrow equ $20
@@ -83,8 +86,6 @@ printString:
 	cmp cl, al
 	je .done
 	mov ah, 0xe
-	mov bh, 0
-	mov bl, 2
 	int 0x10
 	jmp printString
 	.done:
@@ -97,6 +98,7 @@ menu:
 	mov  dl, 12
 	mov  dh, 9
 	mov  bh, 0
+	mov  bl, yellow
 	mov  ah, 02h
 	int  10h
 	mov si, titulo
@@ -119,6 +121,7 @@ tutorial:
 	mov dx, 10
 	call DrawPers
 
+	mov  bl, yellow
 	mov  dl, 8
 	mov  dh, 8
 	mov  ah, 02h
@@ -182,6 +185,7 @@ scoreboard:
 	mov al, black
 	call LimpaArea
 
+	mov bl, yellow
 	mov dl, 2
 	mov dh, 5
 	mov ah, 02h
@@ -1381,14 +1385,14 @@ nv8:
 	call move_right
 
 	call read_char
-	cmp ah, uparrow
-	jne nv8
-	call move_up
-
-	call read_char
 	cmp ah, rightarrow
 	jne nv8
 	call move_right
+
+	call read_char
+	cmp ah, uparrow
+	jne nv8
+	call move_up
 
 	call read_char
 	cmp ah, uparrow
