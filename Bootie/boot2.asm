@@ -6,7 +6,7 @@ line2 db 'Configurando modo do kernel', 0
 line3 db 'Alocando kernel na memoria', 0
 line4 db 'O kernel esta pronto para ser iniciado', 0
 line5 db 'Iniciando', 0
-line6 db " [OK]", 0
+line6 db ' [OK]', 0
 final db '...', 0
 
 start:
@@ -116,7 +116,17 @@ printLine:
     mov dx, 200
     call timing
 
-    jmp printLine
+jmp printLine
+
+putchar_green:
+	mov ah, 09h
+	mov bh, 0
+	mov bl, 2h
+	mov cx, 1
+	int 10h
+	mov ah, 0eh
+	int 10h
+ret
 
 printEnd:
 
@@ -147,15 +157,12 @@ printFinal:
     jmp printFinal
 
 printOk:
-
-    lodsb
-    cmp al, 0
-    je return
-
-    mov ah, 0xe
-    int 10h
-
-    jmp printOk
+	loop_Ok:
+    	lodsb
+    	cmp al, 0
+    	je return
+		call putchar_green
+    	jmp printOk
 
 erase:
     for:
@@ -201,7 +208,7 @@ ret
 reset:
     mov ah, 00h ;reseta o controlador de disco
     mov dl, 0   ;floppy disk
-    int 13h
+    int 12h
 
     jc reset    ;se o acesso falhar, tenta novamente
 
